@@ -1,3 +1,7 @@
+<?php
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -57,6 +61,18 @@
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="form">
                     <h1 style="font-weight: bold;">Sign in</h1>
+
+                    <?php
+                        if(isset($_SESSION["error"]))
+                        {
+                          $error = $_SESSION["error"];
+                          for($i = 0; $i < sizeof($error); $i++)
+                          {
+                            echo "<div style='color: white; background-color: #e74c3c; padding-left: 10px;'><p>&#9888 $error[$i]</p></div>";
+                          }
+                          session_unset();
+                        }
+                    ?>
 
                     <form action="php/sign_up.php" method="POST">
                       <label for="lname">Last Name</label>

@@ -1,4 +1,7 @@
 <?php
+    //start a session
+    session_start();
+
     //database info
     $servername = "localhost";
     $username = "root";
@@ -10,6 +13,7 @@
 
     //code functionality starts here
     //data from signin.html are stored in variables
+
     $lastname = $_POST["lname"];
     $firstname = $_POST["fname"];
     $gender = $_POST["gender"];
@@ -21,7 +25,9 @@
     $confirm_password = $_POST["con-pas"];
     $id_pic = $_POST["val"];
 
-    //function to check if the username or email is already taken, if it is already taken then the user cannot register with it.
+    $_SESSION["error"] = array();
+
+    //function definition to check if the username or email is already taken, if it is already taken then the user cannot register with it.
     function validationCheck()
     {
         global $username;
@@ -37,7 +43,7 @@
         {
             if(mysqli_num_rows($result) >= 1)
             {
-                echo "The username is already taken!<br>";
+                array_push($_SESSION["error"], "The username is already taken!");
                 $no_error = FALSE;
             }
         }
@@ -50,7 +56,7 @@
         {
             if(mysqli_num_rows($result) >= 1)
             {
-                echo "The email is already registered to another account!<br>";
+                array_push($_SESSION["error"], "The email is already registered to another account!");
                 $no_error = FALSE;
             }
         }
@@ -58,7 +64,7 @@
         return $no_error;
     }
 
-    //use the validationCheck function to check the credentials, if there are no problem(s) with the credentials that the user entered the data will be recorded or else they are not recorded
+    //use the defined validationCheck function to check the credentials, if there are no problem(s) with the credentials that the user entered the data will be recorded or else they are not recorded
     if(validationCheck())
     {
         //check if the password matched the confirm password, if matched then the data will be registered else they are not recorded.
@@ -69,7 +75,7 @@
             if($conn->query($sql) === TRUE)
             {
                 //redirect to homepage after recording the data
-                echo "Account registered!";
+                header("location: ../index.html");
             }
             else
             {
@@ -78,12 +84,13 @@
         }
         else
         {
-            echo "password does not match!<br>";
+            array_push($_SESSION["error"], "Password does not match!");
+            header('location: ../signin.php');
         }
     }
     else
     {
-        echo "not recorded!<br>";
+        header('location: ../signin.php');
     }
 
 ?>
